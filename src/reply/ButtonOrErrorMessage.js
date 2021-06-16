@@ -1,4 +1,4 @@
-const AreaList = require('../store').AreaList;
+const AreaList = require('../store').Store.AreaList;
 const TextMessageTemplate = require('./template/TextMessageTemplate');
 
 exports.SendMessage = (client, event) => {
