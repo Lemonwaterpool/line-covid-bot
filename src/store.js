@@ -50,6 +50,6 @@ exports.Store = () => {
     ]
 
     return {
-        areaList
+        areaList: areaList
     };
 };
