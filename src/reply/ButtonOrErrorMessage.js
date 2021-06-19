@@ -53,7 +53,7 @@ exports.SendMessage = (client, event) => {
         return;
     }
 
-    client.replyMessage(replyToken, TextMessageTemplate.Template("エラーです。"));
+    client.replyMessage(replyToken, TextMessageTemplate.Template("都道府県が正しく入力されていないようです。"));
 };
 
 const csv_data = () => {
