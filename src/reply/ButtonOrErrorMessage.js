@@ -1,3 +1,5 @@
+const fetch = require("node-fetch");
+
 const Data = require("../store");
 const TextMessageTemplate = require("./template/TextMessageTemplate");
 
@@ -20,14 +22,43 @@ exports.SendMessage = (client, event) => {
 
     const area = Data.getAreaList().find(area => area.name === text);
     if (area) {
-        client.replyMessage(
-            replyToken,
-            TextMessageTemplate.Template(
-                `${area.name}(${area.id})のデータを照会中です。。。`
-            )
-        );
+        csv_data().then(data => {
+            const dataArray = [];
+            let dataString = data.split("\n");
+            dataString.pop();
+            dataString.forEach((value, index, _) => {
+                dataArray[index] = value.split(",");
+            });
+            const latestData = dataArray[dataArray.length - 1];
+            const areaCount = latestData[area.id];
+            const date = latestData[0];
+            const isUpdated = areaCount != "";
+            if (isUpdated) {
+                client.replyMessage(
+                    replyToken,
+                    TextMessageTemplate.Template(
+                        `${area.name}の新規感染者数は、${areaCount}人です。(${date})`
+                    )
+                );
+            } else {
+                client.replyMessage(
+                    replyToken,
+                    TextMessageTemplate.Template(
+                        `${area.name}の新規感染者数はまだ更新されていません。しばらく待ってから再度照会してください。(${date})`
+                    )
+                );
+            }
+        });
+
         return;
     }
 
     client.replyMessage(replyToken, TextMessageTemplate.Template("エラーです。"));
+};
+
+const csv_data = () => {
+    const dataPath =
+        "https://raw.githubusercontent.com/swsoyee/2019-ncov-japan/master/50_Data/byDate.csv";
+    const response = fetch(dataPath).then(response => response.text());
+    return response;
 };
