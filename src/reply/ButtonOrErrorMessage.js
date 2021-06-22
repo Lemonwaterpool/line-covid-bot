@@ -24,12 +24,14 @@ exports.SendMessage = (client, event) => {
     if (area) {
         csv_data().then(data => {
             const dataArray = [];
-            let dataString = data.split("\n");
-            dataString.pop();
+            const dataString = data.split("\n");
             dataString.forEach((value, index, _) => {
                 dataArray[index] = value.split(",");
             });
-            const latestData = dataArray[dataArray.length - 1];
+            let latestData = dataArray[dataArray.length - 1];
+            if (latestData[0] == '') {
+                latestData = dataArray[dataArray.length - 2];
+            }
             const areaCount = latestData[area.id];
             const date = latestData[0];
             const isUpdated = areaCount != "";
